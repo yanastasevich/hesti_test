@@ -1,0 +1,36 @@
+{
+    "region": "Bermuda",
+    
+    "mapCenter": {
+      "lat": 32.3074,
+      "lng": -64.7505
+    },
+    "polygonCoordinates": [
+      { "lat": 25.7743, "lng": -80.1937 },
+      { "lat": 40.7128, "lng": -74.0060 },
+      { "lat": 34.0522, "lng": -118.2437 }
+    ],
+
+    "polygonCoordinatesOutOfRange": [
+  { "lat": 100.0000, "lng": -80.1937 },  
+  { "lat": 40.7128, "lng": -200.0000 },  
+  { "lat": 34.0522, "lng": -118.2437 }   
+],
+
+    "polygonCoordinatesNonNumeric": [
+  { "lat": "invalidLat1", "lng": -80.1937 },  
+  { "lat": 40.7128, "lng": "invalidLng2" },  
+  { "lat": 34.0522, "lng": -118.2437 }      
+],
+
+"polygonCoordinatesNullOrEmpty": [
+  { "lat": null, "lng": -80.1937 },  
+  { "lat": 40.7128, "lng": "" },      
+  { "lat": 34.0522, "lng": -118.2437 } 
+]
+
+
+
+  }
+  
+  
