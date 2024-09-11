@@ -2,8 +2,7 @@
 import polygonTestData from '../fixtures/polygonTestData.json';
 import polygonPage from './pages/polygonPage';
 
-
-// create page object model with my data, refactor
+// import my test coordinates from the test data json file
 const polygonCoordinatesEdgeCases = [
   {
     edgeCaseName: 'polygonCoordinatesOutOfRange',
@@ -25,31 +24,25 @@ describe('Verify how the system acts with incorrect polygons', () => {
     cy.visitMap();
   });
 
-  it('Add the coordinates for the polygon', () => {
-    cy.ensureElementVisibleAndInteract('#addFirstPolygon', $el => {
-      cy.wrap($el).click();
-    });
-  });
 
-  
-
-
-  polygonCoordinatesEdgeCases.forEach(({ edgeCaseName, polygonCoordinatesEdgeCases }) => {
+// filling the coordinates for all of the edge cases
+  polygonCoordinatesEdgeCases.forEach(({ edgeCaseName, coordinates }) => {
     it(`Add polygon coordinates based on ${edgeCaseName}`, () => {
-      polygonPage.addNewPolygonCoordinates(polygonCoordinatesEdgeCases);
+      polygonPage.addNewPolygonCoordinates(coordinates);
       polygonPage.clickSaveCoordinatesPolygonBtn();
     });
 
-    polygonCoordinatesEdgeCases.forEach(({ polygonCoordinatesEdgeCases }) => {
-      it('Verify the fields with wrong inputs highlight red', () => {
-        const coordinateInput = polygonPage.getTheCoordinatesInputFields(polygonCoordinatesEdgeCases);
-        if(coordinateInput.value === null || coordinateInput.value === '' || isNaN(coordinateInput.value)) {
-          cy.get(coordinateInput).should('have.class', 'error'); 
+    // for each edge case name, making sure that the fields are highlighted with red
+    it(`Verify the fields with wrong inputs highlight red for ${edgeCaseName}`, () => {
+      coordinates.forEach(coordinate => {
+        const coordinateInput = polygonPage.getTheCoordinatesInputField(coordinate);
+        if(coordinate === null || coordinate === '' || isNaN(coordinate)) {
+          cy.get(coordinateInput).should('have.class', 'error');
         } else {
-          cy.get(coordinateInput).should('not.have.class', 'error'); 
+          cy.get(coordinateInput).should('not.have.class', 'error');
         }
       });
-
+    });
   });
 
   after(() => {
