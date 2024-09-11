@@ -1,49 +1,44 @@
 /// <reference types="cypress" />
 import polygonTestData from '../fixtures/polygonTestData.json';
+import mapPage from './pages/mapPage';
+import polygonPage from './pages/polygonPage';
 
-// Define helper functions outside of `it` blocks
 
 describe('Happy Path Test Add Polygon', () => {
   before(() => {
-    // Run before all tests
     cy.performLogin();
     cy.visitMap();
   });
 
+  // it("") signifies a test step
   it('Enter and verify desired geographical region', () => {
     const { region, mapCenter } = polygonTestData;
-    cy.enterRegion(region);
+    mapPage.enterRegion(region);
     cy.wait(2000);
-    cy.verifyMapCenter(mapCenter.lat, mapCenter.lng);
-  });
-
-  it('Enable polygon drawing mode', () => {
-    cy.enableDrawingMode(); // Fixed the method name
+    expect(mapPage.getActualMapCenter()).to.eq(mapCenter.lat, mapCenter.lng)
   });
 
   it('Draw a polygon', () => {
-    const { region, mapCenter } = polygonTestData;
-    cy.enterRegion(region);
-    cy.wait(2000);
-    cy.verifyMapCenter(mapCenter.lat, mapCenter.lng);
-  });
-
-  it('Save the polygon', () => {
-    cy.clickSavePolygon();
+    const { polygonCoordinates } = polygonTestData;
+    polygonPage.clickDrawPolygonBtn();
+    mapPage.drawPolygonOnTheMap(polygonCoordinates);
+    polygonPage.clickSaveDrawnPolygonBtn();
   });
 
   it('Verify the polygon is displayed on the map', () => {
     const { polygonCoordinates } = polygonTestData;
-    cy.verifyPolygonOnMap(polygonCoordinates);
-    // Optionally, add code to verify a small sign at the center of the polygon coordinates
+    expect(mapPage.getAllPolygonsFromTheMap[0].lat).to.eq(polygonCoordinates.lat)
+    expect(mapPage.getAllPolygonsFromTheMap[0].lng).to.eq(polygonCoordinates.lng)
   });
 
   it('Verify the polygon is present in the polygon management', () => {
-    const { polygonName } = polygonTestData; // Ensure `polygonName` is available in your test data
-    cy.verifyPolygonInManagement(polygonName, polygonCoordinates);
+    const { polygonName, polygonCoordinates } = polygonTestData; 
+    expect(polygonPage.fetchPolygonFromPolygonManagement(polygonName)).to.eq(polygonCoordinates)
   });
 
+  // the polygon is added and deleted, clean up after the test
   after(() => {
-    cy.deletePolygon(polygonTestData.polygonName); // Ensure `polygonName` is available in your test data
+    const { polygonName } = polygonTestData;
+    polygonPage.deletePolygon(polygonName); 
   });
 });
